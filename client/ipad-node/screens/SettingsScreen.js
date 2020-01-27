@@ -24,7 +24,7 @@ export default function SettingsScreen(props) {
         // console.log(res);
       });
     props.navigation.addListener("didFocus", payload => {
-      fetch("http://localhost:4000/todos/incomplete")
+      fetch("http://localhost:4000/todos/completed")
         .then(res => res.json())
         .then(res => {
           if (res && !tasksCollection.length) {
