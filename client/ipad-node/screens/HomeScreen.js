@@ -8,92 +8,112 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import Task from "../components/Task";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function HomeScreen() {
-  const [inputState, setInput] = useState("");
-  const [response, setResponse] = useState();
+export default function HomeScreen({ navigation }) {
+  const [tasksCollection, setTasks] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/users")
+    fetch("http://localhost:4000/todos/incomplete")
       .then(res => res.json())
-      .then(res => console.log(res.express));
+      .then(res => {
+        if (res && !tasksCollection.length) {
+          setTasks(res);
+        }
+        console.log(res);
+      });
+    //
+    navigation.addListener("didFocus", payload => {
+      fetch("http://localhost:4000/todos/incomplete")
+        .then(res => res.json())
+        .then(res => {
+          if (res && !tasksCollection.length) {
+            setTasks(res);
+          }
+          console.log(res);
+        });
+    });
   }, []);
 
-  async function handleSubmit() {
-    const response = await fetch("http://localhost:3000/users/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(inputState)
-    });
-    const body = await response.text();
-    setResponse({ responseToPost: body });
-  }
+  const updatedTasks = todoID => {
+    let updatedCollection = tasksCollection.filter(task => task._id !== todoID);
+    setTasks(updatedCollection);
+  };
+
+  const addedTask = todo => {
+    const newTask = {
+      todo_description: todo.todo_description,
+      todo_responsible: todo.todo_responsible,
+      todo_priority: todo.todo_priority,
+      todo_completed: todo.todo_completed
+    };
+    setTasks([...tasksCollection, newTask]);
+  };
 
   return (
     <View style={styles.container}>
+      <Text
+        style={{
+          color: "#605e5e",
+          marginLeft: 20,
+          marginTop: 10,
+          marginBottom: 10,
+          fontWeight: "900",
+          fontSize: 25
+        }}
+      >
+        What's on the agenda?
+      </Text>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        <Text
-          style={{
-            fontWeight: "900",
-            fontSize: 24,
-            marginTop: 200,
-            marginLeft: "auto",
-            marginRight: "auto"
-          }}
-        >
-          Express Server Form
-        </Text>
-        <View
-          style={{
-            backgroundColor: "#F2EFEE",
-            height: 75,
-            marginTop: 20,
-            marginBottom: "auto"
-          }}
-        >
-          <TextInput
-            style={{ color: "black", fontSize: 50 }}
-            value={inputState}
-            onChangeText={text => setInput(text)}
-          />
-          <TouchableOpacity
-            onPress={handleSubmit}
-            style={{
-              borderRadius: 10,
-              marginLeft: "auto",
-              marginRight: "auto",
-              marginTop: 30,
-              backgroundColor: "#25aae1",
-              padding: 5,
-              height: 40,
-              width: 80
-            }}
-          >
-            <Text style={{ color: "white", fontWeight: "800", padding: 5 }}>
-              Submit
-            </Text>
-          </TouchableOpacity>
-          {response ? (
-            <Text style={{ marginTop: 10, marginLeft: 20 }}>
-              Request: {response.responseToPost}
-            </Text>
-          ) : (
-            <Text style={{ marginTop: 10, marginLeft: 20 }}>Request:</Text>
-          )}
-        </View>
+        {tasksCollection ? (
+          tasksCollection.map(taskObj => {
+            return (
+              <Task
+                key={taskObj._id}
+                task={taskObj}
+                updatedTasks={updatedTasks}
+              />
+            );
+          })
+        ) : (
+          <Text style={{ marginTop: 10, marginLeft: 20 }}>Tasks: None!</Text>
+        )}
       </ScrollView>
     </View>
   );
 }
 
-HomeScreen.navigationOptions = {
-  header: null
-};
+HomeScreen.navigationOptions = ({ navigation }) => ({
+  title: "Tasks",
+  headerTitleStyle: {
+    color: "black",
+    textAlign: "left",
+    fontSize: 18,
+    fontWeight: "900"
+  },
+  headerTintColor: "rgba(255,255,255,0.8)",
+
+  headerRightContainerStyle: {
+    paddingRight: 10
+  },
+  headerRight: (
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("Form", {
+          if(addedTask) {
+            addedTask = { addedTask };
+          }
+        });
+      }}
+    >
+      <Ionicons name="ios-add" size={30} color="black" left={50} />
+    </TouchableOpacity>
+  )
+});
 
 const styles = StyleSheet.create({
   container: {

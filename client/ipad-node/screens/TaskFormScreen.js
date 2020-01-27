@@ -9,21 +9,13 @@ import {
   View
 } from "react-native";
 import Task from "../components/Task";
+import TaskForm from "../components/TaskForm";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function SettingsScreen() {
-  const [tasksCollection, setTasks] = useState([]);
+export default function TaskFormScreen({ navigation }) {
+  const added = JSON.stringify(navigation.getParam("addedTask", "nothing"));
 
-  useEffect(() => {
-    fetch("http://localhost:4000/todos/completed")
-      .then(res => res.json())
-      .then(res => {
-        if (res && !tasksCollection.length) {
-          setTasks(res);
-        }
-        console.log(res);
-      });
-  }, []);
+  console.log(added);
 
   return (
     <View style={styles.container}>
@@ -40,39 +32,28 @@ export default function SettingsScreen() {
             fontSize: 25
           }}
         >
-          What's on the agenda?
+          What do you need to do?
         </Text>
-        {tasksCollection ? (
-          tasksCollection.map(taskObj => {
-            return <Task key={taskObj._id} task={taskObj} />;
-          })
-        ) : (
-          <Text style={{ marginTop: 10, marginLeft: 20 }}>Tasks: None!</Text>
-        )}
+        <TaskForm navigation={navigation} />
       </ScrollView>
     </View>
   );
 }
 
-SettingsScreen.navigationOptions = ({ navigation }) => ({
-  title: "Tasks",
+TaskFormScreen.navigationOptions = {
+  title: "Add Task",
   headerTitleStyle: {
     color: "black",
     textAlign: "left",
     fontSize: 18,
     fontWeight: "900"
   },
-  headerTintColor: "rgba(255,255,255,0.8)",
+  headerTintColor: "black",
 
-  headerRightContainerStyle: {
-    paddingRight: 10
-  },
-  headerRight: (
-    <TouchableOpacity onPress={() => navigation.navigate("Form")}>
-      <Ionicons name="ios-add" size={30} color="black" left={50} />
-    </TouchableOpacity>
-  )
-});
+  headerLeftContainerStyle: {
+    paddingLeft: 10
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
