@@ -11,7 +11,7 @@ import {
 import Task from "../components/Task";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function SettingsScreen() {
+export default function SettingsScreen(props) {
   const [tasksCollection, setTasks] = useState([]);
 
   useEffect(() => {
@@ -21,27 +21,38 @@ export default function SettingsScreen() {
         if (res && !tasksCollection.length) {
           setTasks(res);
         }
-        console.log(res);
+        // console.log(res);
       });
+    props.navigation.addListener("didFocus", payload => {
+      fetch("http://localhost:4000/todos/incomplete")
+        .then(res => res.json())
+        .then(res => {
+          if (res && !tasksCollection.length) {
+            setTasks(res);
+          }
+          // console.log(res);
+        });
+    });
   }, []);
 
   return (
     <View style={styles.container}>
+      <Text
+        style={{
+          color: "#605e5e",
+          marginLeft: 20,
+          marginTop: 10,
+          marginBottom: 10,
+          fontWeight: "900",
+          fontSize: 25
+        }}
+      >
+        Completed Tasks
+      </Text>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        <Text
-          style={{
-            color: "#605e5e",
-            marginLeft: 20,
-            marginBottom: 20,
-            fontWeight: "900",
-            fontSize: 25
-          }}
-        >
-          What's on the agenda?
-        </Text>
         {tasksCollection ? (
           tasksCollection.map(taskObj => {
             return <Task key={taskObj._id} task={taskObj} />;

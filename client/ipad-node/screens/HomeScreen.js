@@ -21,7 +21,7 @@ export default function HomeScreen({ navigation }) {
         if (res && !tasksCollection.length) {
           setTasks(res);
         }
-        console.log(res);
+        // console.log(res);
       });
     //
     navigation.addListener("didFocus", payload => {
@@ -31,7 +31,7 @@ export default function HomeScreen({ navigation }) {
           if (res && !tasksCollection.length) {
             setTasks(res);
           }
-          console.log(res);
+          // console.log(res);
         });
     });
   }, []);
