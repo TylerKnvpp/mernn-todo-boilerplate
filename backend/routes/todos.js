@@ -66,7 +66,7 @@ router.route("/update/:id").post(function(req, res) {
     todo
       .save()
       .then(todo => {
-        res.json("Todo updated!");
+        res.json("Task Completed!");
       })
       .catch(err => {
         res.status(400).send("Update not possible");

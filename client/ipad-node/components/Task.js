@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import _ from "lodash";
 
@@ -29,7 +29,7 @@ function Task(props) {
       .then(res => res.json())
       .then(res => {
         if (res) {
-          console.log(res);
+          Alert.alert(res);
           props.updatedTasks(props.task._id);
         }
       })

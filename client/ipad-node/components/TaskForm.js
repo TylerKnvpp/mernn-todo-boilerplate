@@ -31,9 +31,10 @@ function TaskForm(props) {
       })
         .then(res => res.json())
         .then(res => {
-          console.log(res);
-
-          props.navigation.goBack();
+          if (res) {
+            Alert.alert(res.todos);
+            props.navigation.goBack();
+          }
         })
         .catch(console.log);
     }
