@@ -11,7 +11,7 @@ import {
 import Task from "../components/Task";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function SettingsScreen(props) {
+export default function CompletedScreen(props) {
   const [tasksCollection, setTasks] = useState([]);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function SettingsScreen(props) {
   );
 }
 
-SettingsScreen.navigationOptions = ({ navigation }) => ({
+CompletedScreen.navigationOptions = ({ navigation }) => ({
   title: "Tasks",
   headerTitleStyle: {
     color: "black",
