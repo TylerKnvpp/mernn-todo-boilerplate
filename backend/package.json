@@ -1,5 +1,5 @@
 {
-  "name": "ipad-node-test",
+  "name": "mernn-todo-boilerplate",
   "version": "1.0.0",
   "scripts": {
     "client": "cd client && yarn start",
